@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
+    <style type="text/css">
+        body {
+            background-color: white;
+        }
+
+        canvas {
+            border: 1px solid #000000;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sultan</h1>
+    <canvas id="canvas-for-ball" width="500" height="500"></canvas>
+
+    <script type="text/javascript">
+        var canvas = document.getElementById("canvas-for-ball");
+        var ctx = canvas.getContext("2d");
+
+        class Ball {
+            constructor(x, y, xspeed, yspeed, radius) {
+                this.x = x;
+                this.y = y;
+                this.xspeed = xspeed;
+                this.yspeed = yspeed;
+                this.r = radius
+            }
+
+
+            move() {
+                this.x += this.xspeed;
+                this.y += this.yspeed;
+                if (this.y >= 500) {
+                    this.yspeed = -35;
+                }
+                if (this.y <= 0) {
+                    this.yspeed = 35;
+                }
+                if (this.x >= 500) {
+                    this.xspeed = -50;
+                }
+                if (this.x <= 0) {
+                    this.xspeed = 50;
+                }
+            }
+
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+
+
+        }
+
+
+        var myBall = new Ball(100, 10, 15, 5, 3);
+
+        function repeatme() {
+
+
+
+            ctx.clearRect(0, 0, 500, 500);
+
+
+            myBall.move();
+
+
+            myBall.draw();
+
+            window.requestAnimationFrame(repeatme);
+        }
+
+        repeatme();
+    </script>
+</body>
+
+</html>
