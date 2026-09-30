@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <h1>Sultan</h1>
+    <h1>mohammed</h1>
     <canvas id="canvas-for-ball" width="500" height="500"></canvas>
 
     <script type="text/javascript">
@@ -37,16 +37,16 @@
                 this.x += this.xspeed;
                 this.y += this.yspeed;
                 if (this.y >= 500) {
-                    this.yspeed = -35;
+                    this.yspeed = -1 * this.yspeed;
                 }
                 if (this.y <= 0) {
-                    this.yspeed = 35;
+                    this.yspeed = -1 * this.yspeed;
                 }
                 if (this.x >= 500) {
-                    this.xspeed = -50;
+                    this.xspeed = -1 * this.xspeed;
                 }
                 if (this.x <= 0) {
-                    this.xspeed = 50;
+                    this.xspeed = -1 * this.xspeed;
                 }
             }
 
@@ -61,20 +61,78 @@
 
         }
 
+        class Paddle {
+            constructor(x, y, width, height) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+            }
 
-        var myBall = new Ball(100, 10, 15, 5, 3);
+            move() {
+
+                if (this.x < 0) this.x = 0;
+                if (this.x + this.height > 500) this.x = 500 - this.height;
+
+                if (this.y < 0) this.y = 0;
+                if (this.y + this.height > 500) this.y = 500 - this.height;
+            }
+
+            draw() {
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+
+        var myBall = new Ball(100, 10, 4, 4, 8);
+        var myPaddle = new Paddle(20, 200, 15, 80);
+        var myPaddle1 = new Paddle(400, 200, 15, 80);
+
+        canvas.addEventListener("mousemove", function (event) {
+
+
+            myPaddle.x = (event.clientX);
+        });
+
+
+        window.addEventListener("keydown", function (event) {
+
+            console.log("Key pressed:", event.key);
+
+            if (event.key === "a") {
+                myPaddle.y -= 15;
+            } else if (event.key === "d") {
+                myPaddle.y += 15;
+            }
+
+            if (event.key === "i") {
+                myPaddle1.y -= 15;
+            } else if (event.key === "k") {
+                myPaddle1.y += 15;
+            } else if (vent.key === "j") {
+
+                myPaddle1.x -= 15;
+
+            } else if (vent.key === "l") {
+                myPaddle1.x += 15;
+            }
+
+
+        });
+
 
         function repeatme() {
-
-
-
             ctx.clearRect(0, 0, 500, 500);
 
-
             myBall.move();
-
-
             myBall.draw();
+
+            myPaddle.move();
+            myPaddle.draw();
+
+            myPaddle1.move();
+            myPaddle1.draw();
+
 
             window.requestAnimationFrame(repeatme);
         }
