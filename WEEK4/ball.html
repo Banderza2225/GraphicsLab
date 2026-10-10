@@ -54,7 +54,10 @@
 
             draw() {
                 ctx.beginPath();
-                ctx.fillStyle = this.color;
+                var gradient = ctx.createRadialGradient(this.x - this.r / 3, this.y - this.r / 3, this.r / 10, this.x, this.y, this.r);
+                gradient.addColorStop(0, "white");
+                gradient.addColorStop(1, this.color);
+                ctx.fillStyle = gradient;
                 ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
                 ctx.fill();
             }
@@ -65,16 +68,21 @@
 
 
         class Paddle {
-            constructor(x, y, radius) {
+            constructor(x, y, radius, color) {
                 this.x = x;
                 this.y = y;
                 this.r = radius;
+                this.color = color;
                 this.score = 0;
             }
 
 
             draw() {
                 ctx.beginPath();
+                var gradient = ctx.createRadialGradient(this.x - this.r / 3, this.y - this.r / 3, this.r / 10, this.x, this.y, this.r);
+                gradient.addColorStop(0, "white");
+                gradient.addColorStop(1, this.color);
+                ctx.fillStyle = gradient;
                 ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
                 ctx.fill();
             }
@@ -88,7 +96,7 @@
 
 
         var myBall = new Ball(100, 10, 4, 4, 8, "red");
-        var paddle = new Paddle(250, 450, 20);
+        var paddle = new Paddle(250, 450, 20, "blue");
         var collisionMessage = "";
         var messageTimer = 0;
       
