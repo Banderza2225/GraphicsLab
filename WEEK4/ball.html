@@ -67,6 +67,7 @@
                 this.x = x;
                 this.y = y;
                 this.r = radius;
+                this.score = 0;
             }
 
 
@@ -122,9 +123,18 @@
             if (checkCollision(paddle, myBall)) {
                 myBall.xspeed = -1 * myBall.xspeed;
                 myBall.yspeed = -1 * myBall.yspeed;
+                paddle.score++;
                 collisionMessage = "Collision Detected!";
                 messageTimer = 60;
             }
+
+            if (myBall.y <= 0) {
+                paddle.score--;
+            }
+
+            ctx.fillStyle = "black";
+            ctx.font = "16px Arial";
+            ctx.fillText("Score: " + paddle.score, 10, 25);
 
             if (messageTimer > 0) {
                 ctx.fillStyle = "black";
