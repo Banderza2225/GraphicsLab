@@ -120,6 +120,8 @@
             myBall.draw();
 
             if (checkCollision(paddle, myBall)) {
+                myBall.xspeed = -1 * myBall.xspeed;
+                myBall.yspeed = -1 * myBall.yspeed;
                 collisionMessage = "Collision Detected!";
                 messageTimer = 60;
             }
