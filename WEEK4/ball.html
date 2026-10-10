@@ -61,31 +61,12 @@
 
         }
 
-       
-        class Ball {
+
+        class Paddle {
             constructor(x, y, radius) {
                 this.x = x;
                 this.y = y;
-                
-                this.r = radius
-            }
-
-
-            move() {
-                this.x += this.xspeed;
-                this.y += this.yspeed;
-                if (this.y >= 500) {
-                    this.yspeed = -1 * this.yspeed;
-                }
-                if (this.y <= 0) {
-                    this.yspeed = -1 * this.yspeed;
-                }
-                if (this.x >= 500) {
-                    this.xspeed = -1 * this.xspeed;
-                }
-                if (this.x <= 0) {
-                    this.xspeed = -1 * this.xspeed;
-                }
+                this.r = radius;
             }
 
 
@@ -104,11 +85,12 @@
 
 
         var myBall = new Ball(100, 10, 4, 4, 8);
+        var paddle = new Paddle(250, 450, 20);
       
         canvas.addEventListener("mousemove", function (event) {
-
-
-            
+            var rect = canvas.getBoundingClientRect();
+            paddle.x = event.clientX - rect.left;
+            paddle.y = event.clientY - rect.top;
         });
 
 
@@ -123,6 +105,7 @@
         function repeatme() {
             ctx.clearRect(0, 0, 500, 500);
 
+            paddle.draw();
             myBall.move();
             myBall.draw();
 
