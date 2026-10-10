@@ -24,12 +24,13 @@
         var ctx = canvas.getContext("2d");
 
         class Ball {
-            constructor(x, y, xspeed, yspeed, radius) {
+            constructor(x, y, xspeed, yspeed, radius, color) {
                 this.x = x;
                 this.y = y;
                 this.xspeed = xspeed;
                 this.yspeed = yspeed;
-                this.r = radius
+                this.r = radius;
+                this.color = color;
             }
 
 
@@ -53,6 +54,7 @@
 
             draw() {
                 ctx.beginPath();
+                ctx.fillStyle = this.color;
                 ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
                 ctx.fill();
             }
@@ -85,7 +87,7 @@
 
 
 
-        var myBall = new Ball(100, 10, 4, 4, 8);
+        var myBall = new Ball(100, 10, 4, 4, 8, "red");
         var paddle = new Paddle(250, 450, 20);
         var collisionMessage = "";
         var messageTimer = 0;
