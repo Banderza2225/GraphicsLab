@@ -21,20 +21,27 @@
         // Implement scene - Create a Three.js scene to hold objects.
         var scene = new THREE.Scene();
 
-        // added sphere to the canvas
-        var sphere = new THREE.Mesh(
-            new THREE.SphereGeometry(1, 16, 16), 
-            new THREE.MeshLambertMaterial({ color: 0x00ff00, wireframe: false })// set wireframe to false to make the sphere solid and changed material to lambert
-        );
-        scene.add(sphere);
-       
-        // added spotlight to the scene
-        var spotLight = new THREE.SpotLight(0xffffff);
-        spotLight.position.set(4, 0.5, 2);
-        scene.add(spotLight);
+        // created a Ball class to encapsulate the sphere's properties and behavior
+        class Ball {
+            constructor(radius) {
+                this.mesh = new THREE.Mesh(
+                    new THREE.SphereGeometry(radius, 16, 16),
+                    new THREE.MeshLambertMaterial({ color: 0x00ff00, wireframe: false })// set wireframe to false to make the sphere solid and changed material to lambert
+                );
+                this.speedX = 0.03;
+            }
+            update() {
+                this.mesh.rotation.x += 0.01;
+                this.mesh.rotation.y += 0.01;
+                this.mesh.position.x += this.speedX;
+                if (Math.abs(this.mesh.position.x) > 4) { this.speedX = -this.speedX; }
+            }
+        }
+        var ball = new Ball(1);
+        scene.add(ball.mesh);
 
-         var spotLight = new THREE.SpotLight(0xffffff);
-        spotLight.position.set(-4, 0.5, 2);
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(1, 0.5, 1);
         scene.add(spotLight);
 
         // Create a camera with specified properties.
@@ -47,14 +54,10 @@
         renderer.setSize(canvasWidth, canvasHeight);// set the size to the canvas width and height
         document.body.appendChild(renderer.domElement);
 
-        var speedX = 0.03;
-         // Animation loop to rotate the sphere and render the scene
+        // Animation loop to rotate the sphere and render the scene
         function repeatMe() {
             requestAnimationFrame(repeatMe);
-            sphere.rotation.x += 0.01;
-            sphere.rotation.y += 0.01;
-            sphere.position.x += speedX;
-            if (Math.abs(sphere.position.x) > 4) { speedX = -speedX; }
+            ball.update();
     renderer.render(scene, camera);
         }
         repeatMe();
