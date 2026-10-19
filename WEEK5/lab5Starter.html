@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<!--Import Three.js CDN-->
+<!--Import three.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <head>
@@ -14,12 +14,20 @@
     <h1>Mohammed Sultan Qureshi</h1>
     <script type="text/javascript">
         
-        // canvas width anfd height added 
+        // Canvas width and height added
         var canvasWidth = window.innerWidth;
         var canvasHeight = window.innerHeight;
 
         // Implement scene - Create a Three.js scene to hold objects.
         var scene = new THREE.Scene();
+
+
+        // added sphere to the canvas 
+        var sphere = new THREE.Mesh(
+            new THREE.SphereGeometry(1, 16, 16), 
+            new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+        );
+        scene.add(sphere);
 
         // Create a camera with specified properties.
         var camera = new THREE.PerspectiveCamera(76, window.innerWidth / window.innerHeight, 0.1, 1000);
