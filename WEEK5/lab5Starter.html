@@ -30,7 +30,11 @@
        
         // added spotlight to the scene
         var spotLight = new THREE.SpotLight(0xffffff);
-        spotLight.position.set(1, 0.5, 1);
+        spotLight.position.set(4, 0.5, 2);
+        scene.add(spotLight);
+
+         var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(-4, 0.5, 2);
         scene.add(spotLight);
 
         // Create a camera with specified properties.
