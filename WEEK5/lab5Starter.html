@@ -23,18 +23,18 @@
 
         // added sphere to the canvas
         var sphere = new THREE.Mesh(
-            new THREE.SphereGeometry(1, 16, 16),
-            new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: false })  // set wireframe to false to make the sphere solid
+            new THREE.SphereGeometry(1, 16, 16), 
+            new THREE.MeshLambertMaterial({ color: 0x00ff00, wireframe: false })// set wireframe to false to make the sphere solid snd changed maeterial to lambert
         );
         scene.add(sphere);
-
-        // Add a spotlight to the scene
+ 
+        // added spotlight to the scene
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(1, 0.5, 1);
         scene.add(spotLight);
 
         // Create a camera with specified properties.
-        var camera = new THREE.PerspectiveCamera(80, canvasWidth / canvasHeight, 0.1, 1000); 
+        var camera = new THREE.PerspectiveCamera(80, canvasWidth / canvasHeight, 0.1, 1000);
         // Set camera position
         camera.position.z = 5;
 
@@ -42,7 +42,7 @@
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize(canvasWidth, canvasHeight);// set the size to the canvas width and height
         document.body.appendChild(renderer.domElement);
-
+ 
         // Animation loop to rotate the sphere and render the scene
         function repeatMe() {
             requestAnimationFrame(repeatMe);
