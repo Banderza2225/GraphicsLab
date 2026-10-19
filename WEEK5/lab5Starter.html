@@ -13,7 +13,7 @@
 <body>
     <h1>Mohammed Sultan Qureshi</h1>
     <script type="text/javascript">
-        
+
         // Canvas width and height parameters
         var canvasWidth = window.innerWidth;
         var canvasHeight = window.innerHeight;
@@ -21,40 +21,84 @@
         // Implement scene - Create a Three.js scene to hold objects.
         var scene = new THREE.Scene();
 
-        // created a Ball class to encapsulate the sphere's properties and behavior
+        // Gravity: subtracted from the vertical velocity of each ball every frame
+        var gravity = 0.003;
+
+        // The box the spheres bounce around inside (also used to size the transparent cube)
+        var box = new THREE.Box3(new THREE.Vector3(-4, -3, -4), new THREE.Vector3(4, 5, 4));
+
+        // Ball class encapsulates the sphere's properties and behaviour
         class Ball {
-            constructor(radius, floorY, topY) {
+            constructor(radius, color, position, velocity, box) {
                 this.radius = radius;
-                this.floorY = floorY;
-                this.topY = topY;
-                this.speedY = -0.05;
+                this.box = box;
+                this.velocity = velocity;
+                // Sphere with a MeshLambertMaterial so it reacts to the light
                 this.mesh = new THREE.Mesh(
                     new THREE.SphereGeometry(radius, 16, 16),
-                    new THREE.MeshLambertMaterial({ color: 0x00ff00, wireframe: false })
+                    new THREE.MeshLambertMaterial({ color: color, wireframe: false })
                 );
-                this.speedX = 0.03;
-                this.mesh.position.y = topY;
+                this.mesh.position.copy(position);
+                this.mesh.castShadow = true;
+                // Wireframe drawn on top of the Lambert material (child mesh, slightly larger to avoid z-fighting)
+                var wire = new THREE.Mesh(
+                    new THREE.SphereGeometry(radius, 16, 16),
+                    new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true })
+                );
+                wire.scale.setScalar(1.01);
+                this.mesh.add(wire);
             }
             update() {
+                // Rotate the sphere
                 this.mesh.rotation.x += 0.01;
                 this.mesh.rotation.y += 0.01;
-                this.mesh.position.x += this.speedX;
-                if (Math.abs(this.mesh.position.x) > 4) { this.speedX = -this.speedX; }
-                this.mesh.position.y += this.speedY;
-                if (this.mesh.position.y - this.radius <= this.floorY) { this.speedY = Math.abs(this.speedY); }
-                if (this.mesh.position.y >= this.topY) { this.speedY = -Math.abs(this.speedY); }
+                // Apply gravity, then translate the sphere by its velocity
+                this.velocity.y -= gravity;
+                this.mesh.position.add(this.velocity);
+                // Bounce off the walls, ceiling and floor of the box
+                var p = this.mesh.position, v = this.velocity, r = this.radius, b = this.box;
+                if (p.x - r < b.min.x) { p.x = b.min.x + r; v.x = -v.x; }
+                if (p.x + r > b.max.x) { p.x = b.max.x - r; v.x = -v.x; }
+                if (p.z - r < b.min.z) { p.z = b.min.z + r; v.z = -v.z; }
+                if (p.z + r > b.max.z) { p.z = b.max.z - r; v.z = -v.z; }
+                if (p.y + r > b.max.y) { p.y = b.max.y - r; v.y = -v.y; }
+                if (p.y - r < b.min.y) { p.y = b.min.y + r; v.y = -v.y * 0.95; } // floor: lose a little energy
             }
         }
-        var ball = new Ball(1, -3, 3);
-        ball.mesh.castShadow = true;
-        scene.add(ball.mesh);
 
+        // Collision detection between two balls
+        function checkCollision(a, b) {
+            var n = new THREE.Vector3().subVectors(b.mesh.position, a.mesh.position);
+            var dist = n.length();
+            var minDist = a.radius + b.radius;
+            if (dist < minDist && dist > 0) {
+                n.divideScalar(dist); // collision normal
+                var p = new THREE.Vector3().subVectors(a.velocity, b.velocity).dot(n);
+                if (p > 0) { // equal masses: swap the velocity component along the normal
+                    a.velocity.addScaledVector(n, -p);
+                    b.velocity.addScaledVector(n, p);
+                }
+                var overlap = (minDist - dist) / 2; // push the spheres apart
+                a.mesh.position.addScaledVector(n, -overlap);
+                b.mesh.position.addScaledVector(n, overlap);
+            }
+        }
+
+        // Create the two balls and add them to the scene
+        var ball1 = new Ball(1, 0x00ff00, new THREE.Vector3(-2, 3, 0), new THREE.Vector3(0.03, 0, 0.02), box);
+        var ball2 = new Ball(1, 0xff0000, new THREE.Vector3(2, 1, 0.5), new THREE.Vector3(-0.03, 0, -0.02), box);
+        scene.add(ball1.mesh);
+        scene.add(ball2.mesh);
+
+        // Spot light above the scene that casts the shadows
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(-3, 10, 3);
         spotLight.castShadow = true;
         scene.add(spotLight);
+        // Camera helper to display the light source
         scene.add(new THREE.CameraHelper(spotLight.shadow.camera));
 
+        // Plane below the spheres that receives their shadows
         var plane = new THREE.Mesh(
             new THREE.PlaneGeometry(20, 20),
             new THREE.MeshLambertMaterial({ color: 0xcccccc })
@@ -63,6 +107,14 @@
         plane.position.y = -3;
         plane.receiveShadow = true;
         scene.add(plane);
+
+        // Slightly transparent cube (does not cast shadows, so the shadows fall on the plane)
+        var cube = new THREE.Mesh(
+            new THREE.BoxGeometry(8, 8, 8),
+            new THREE.MeshLambertMaterial({ color: 0x4488ff, transparent: true, opacity: 0.15, depthWrite: false })
+        );
+        cube.position.set(0, 1, 0);
+        scene.add(cube);
 
         // Create a camera with specified properties.
         var camera = new THREE.PerspectiveCamera(80, canvasWidth / canvasHeight, 0.1, 1000);
@@ -74,15 +126,18 @@
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize(canvasWidth, canvasHeight);
         document.body.appendChild(renderer.domElement);
-        renderer.shadowMap.enabled = true;
- // Animation loop to rotate the sphere and render the scene
+        renderer.shadowMap.enabled = true; // enable shadows
+
+        // Animation loop: update the balls, check for collision and render the scene
         function repeatMe() {
             requestAnimationFrame(repeatMe);
-            ball.update();
-    renderer.render(scene, camera);
+            ball1.update();
+            ball2.update();
+            checkCollision(ball1, ball2);
+            renderer.render(scene, camera);
         }
         repeatMe();
-        
+
     </script>
 </body>
 
