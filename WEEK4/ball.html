@@ -95,8 +95,8 @@
 
 
 
-        var myBall = new Ball(100, 10, 4, 4, 8, "red");
         var paddle = new Paddle(250, 450, 20, "blue");
+        var matchBalls = [new Ball(100, 10, 4, 4, 8, "red")];
         var collisionMessage = "";
         var messageTimer = 0;
       
@@ -108,10 +108,9 @@
 
 
         window.addEventListener("keydown", function (event) {
-
-            
-
-
+            if (event.key === "b" || event.key === "B") {
+                matchBalls.push(new Ball(100, 10, 4, 4, 8, "red"));
+            }
         });
 
 
@@ -127,19 +126,22 @@
             ctx.clearRect(0, 0, 500, 500);
 
             paddle.draw();
-            myBall.move();
-            myBall.draw();
 
-            if (checkCollision(paddle, myBall)) {
-                myBall.xspeed = -1 * myBall.xspeed;
-                myBall.yspeed = -1 * myBall.yspeed;
-                paddle.score++;
-                collisionMessage = "Collision Detected!";
-                messageTimer = 60;
-            }
+            for (var i = 0; i < matchBalls.length; i++) {
+                matchBalls[i].move();
+                matchBalls[i].draw();
 
-            if (myBall.y <= 0) {
-                paddle.score--;
+                if (checkCollision(paddle, matchBalls[i])) {
+                    matchBalls[i].xspeed = -1 * matchBalls[i].xspeed;
+                    matchBalls[i].yspeed = -1 * matchBalls[i].yspeed;
+                    paddle.score++;
+                    collisionMessage = "Collision Detected!";
+                    messageTimer = 60;
+                }
+
+                if (matchBalls[i].y <= 0) {
+                    paddle.score--;
+                }
             }
 
             ctx.fillStyle = "black";
