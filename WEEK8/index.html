@@ -71,6 +71,9 @@
                         svg.append("g").attr("class", "y axis").call(yAxis);
 //axis to svg 
 
+                          svg.append("text").text("CO2 Concentration (ppmv)").attr("transform", "translate(" + (-margin.left + 20) + " ," + (height / 2) + ") rotate(-90)");
+                          svg.append("text").text("Years Before 2023").attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 20) + ")");
+//added labels 
                         svg.append("path")
                             .data([data])
                             .attr("class", "line")
