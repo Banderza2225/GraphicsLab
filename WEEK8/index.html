@@ -30,6 +30,8 @@
            
             console.log("Downloaded JSON Data:", data);
 
+            plotCO2Data(data);
+
         }).catch(function(error) {
             console.error("Error loading JSON data:", error);
         });
@@ -56,6 +58,26 @@
  
                 var valueline = d3.line()
                     .x(d => x(d.years_before_2023)).y(d => y(d.co2_ppmv));
+
+                    var svg = d3.select("#chart")
+                        .append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+                        svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
+                        svg.append("g").attr("class", "y axis").call(yAxis);
+
+
+                        svg.append("path")
+                            .data([data])
+                            .attr("class", "line")
+                            .attr("d", valueline)
+                            .style("fill", "none")
+                            .style("stroke", "red")//makes line red
+                            .style("stroke-width", "2px");
         }
 
 
