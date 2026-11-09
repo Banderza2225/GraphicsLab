@@ -51,9 +51,11 @@
 
 
                 var  xAxis = d3.axisBottom(x).ticks(3);
-                
-                var  yAxis = d3.axisLeft(y).ticks(3);
 
+                var  yAxis = d3.axisLeft(y).ticks(3);
+ 
+                var valueline = d3.line()
+                    .x(d => x(d.years_before_2023)).y(d => y(d.co2_ppmv));
         }
 
 
