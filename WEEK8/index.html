@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js Atmospheric CO2 and Climate Data Exercise</title>
+    
+    <!-- 2. Include D3.js (V7) via CDN -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <style>
+       
+    </style>
+</head>
+<body>
+
+   
+    <h1>sultan qureshi </h1>
+    <p>D3.js Atmospheric CO2, Temperature Anomaly, and Methane Visualization</p>
+
+    <div class="chart-container">
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        
+        const dataSourceUrl = "https://raw.githubusercontent.com/humphs078/programming_for_data_analysis_assignment_2/refs/heads/main/datasets/fused_datasets/json/long_term_fused_data.json";
+
+        d3.json(dataSourceUrl).then(function(data) {
+           
+            console.log("Downloaded JSON Data:", data);
+
+        }).catch(function(error) {
+            console.error("Error loading JSON data:", error);
+        });
+
+        function plotCO2Data(data) {
+           
+            
+
+
+        }
+
+
+       
+    </script>
+</body>
+</html>
